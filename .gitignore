@@ -1,0 +1,5 @@
+# Ignore the executable file.
+AnalisadorLexico
+
+# Ignore the build/ directory and its contents
+build/
