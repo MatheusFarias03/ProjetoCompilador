@@ -1,15 +1,3 @@
-/*
-programa le dois numeros
-inteiros e encontra o maior
-*/
-algorimo exemplo2;
-    variavel maior,n1,n2:inteiro;
-inicio
-    leia(n1);
-    leia(n2);
-    se( n1 > n2 ) então
-        maior := n1
-    senao
-        maior := n2;
-    escreva(maior) // imprime o maior valor
-end.
+abc 10.0  f 20.0
+30.0  
+40.0
