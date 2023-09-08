@@ -112,8 +112,9 @@ q1:
         (*pos)++;
         goto q1;
     }
-    	
-	if(isupper(buffer[*pos]))
+    
+	// Se houver uma letra maiuscula ou houver mais de 15 caracteres, retorna infoAtomo com erro. 
+	if(isupper(buffer[*pos]) || (*pos) - init_id > 15)
     	return infoAtomo;
 
     strncpy(infoAtomo.atributo_ID, buffer + init_id, (*pos) - init_id);

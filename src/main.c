@@ -31,7 +31,7 @@ int main()
 	fread(buffer, sizeof(char), tamanho, arquivo);
 	buffer[tamanho] = '\0';
 
-	printf("Realizando analise lexica...");
+	printf("Realizando analise lexica...\n");
 		
 	TInfoAtomo infoAtomo;
 	int conta_linha = 1;
