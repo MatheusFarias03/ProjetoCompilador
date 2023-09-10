@@ -1,12 +1,24 @@
+/*
+ *  Autor: Matheus Farias de Oliveira Matsumoto
+ *  TIA: 32138271
+ * 
+ *  Nao eh permitido o uso deste arquivo para outros alunos que estao cursando a materia de
+ *  compiladores do sexto semestre do curso de Ciencia da Computacao, 2023, na Universidade
+ *  Presbiteriana Mackenzie.
+ * 
+ *  Link: https://github.com/MatheusFarias03/ProjetoCompilador 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "include/TInfoAtomo.h"
+#include "include/AnalisadorLexico.h"
 
 TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
 {
 	TInfoAtomo infoAtomo;
+	
 	// Descartando os delimitadores.
 	while(buffer[*pos]==' ' || buffer[*pos]=='\n' || buffer[*pos]=='\t' || buffer[*pos]=='\r')
 	{
@@ -24,6 +36,14 @@ TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
 	else if(islower(buffer[*pos]))
 	{
 		infoAtomo = reconhece_id(buffer, pos);
+	}
+	else if(buffer[*pos] == '+')
+	{
+		infoAtomo.atomo = OP_SOMA;
+	}
+	else if(buffer[*pos] == '*')
+	{
+		infoAtomo.atomo = OP_MULT;
 	}
 	else if(buffer[*pos] == '\x0')
 	{
