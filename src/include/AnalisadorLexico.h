@@ -15,6 +15,7 @@
 typedef enum
 {
 	ERRO,
+	COMENTARIO,
 	IDENTIFICADOR,
 	NUMERO,
 	OP_SOMA,
@@ -30,7 +31,8 @@ typedef struct
 	char atributo_ID[16];
 }TInfoAtomo;
 
-// Funcoes que retornam TInfoAtomo.
+
+void descartar_delimitadores(char* buffer, int *conta_linha, int *pos);
 TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int* pos);
 TInfoAtomo reconhece_numero(char* buffer, int* pos);
 TInfoAtomo reconhece_id(char* buffer, int* pos);

@@ -15,11 +15,9 @@
 #include <ctype.h>
 #include "include/AnalisadorLexico.h"
 
-TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
+
+void descartar_delimitadores(char* buffer, int *conta_linha, int *pos)
 {
-	TInfoAtomo infoAtomo;
-	
-	// Descartando os delimitadores.
 	while(buffer[*pos]==' ' || buffer[*pos]=='\n' || buffer[*pos]=='\t' || buffer[*pos]=='\r')
 	{
 		if(buffer[*pos]=='\n')
@@ -27,6 +25,49 @@ TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
 			(*conta_linha)++;
 		}
 		(*pos)++;
+	}
+}
+
+
+TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
+{
+	TInfoAtomo infoAtomo;
+	
+	descartar_delimitadores(buffer, conta_linha, pos);
+
+	// Checar comentarios.
+	if(buffer[*pos] == '/')
+	{
+		(*pos)++;
+		
+		// Se for comentario de apenas uma linha.
+		if(buffer[*pos] == '/')
+		{
+			do
+			{
+				(*pos)++;
+			} while (buffer[*pos] != '\n');
+			descartar_delimitadores(buffer, conta_linha, pos);
+		}
+
+		// Se for comentario de multiplas linhas.
+		else if(buffer[*pos] == '*')
+		{
+			do
+			{
+				(*pos)++;
+				if(buffer[*pos]=='\n')
+				{
+					(*conta_linha)++;
+				}
+			} while (buffer[*pos] != '*' && buffer[(*pos)+1] != '/');
+			descartar_delimitadores(buffer, conta_linha, pos);
+			(*pos) += 2;
+		}
+
+		infoAtomo.atomo = COMENTARIO;
+		infoAtomo.linha = *conta_linha;
+		return infoAtomo;
 	}
 
 	if(isdigit(buffer[*pos]))
@@ -113,6 +154,7 @@ q3:
     return infoAtomo;
 }
 
+
 TInfoAtomo reconhece_id(char* buffer, int *pos)
 {
 	int init_id = *pos;
@@ -127,7 +169,7 @@ TInfoAtomo reconhece_id(char* buffer, int *pos)
     return infoAtomo;
 
 q1:
-	if(islower(buffer[*pos])||isdigit(buffer[*pos]))
+	if(islower(buffer[*pos]) || isdigit(buffer[*pos]) || buffer[*pos] == '_')
 	{
         (*pos)++;
         goto q1;
