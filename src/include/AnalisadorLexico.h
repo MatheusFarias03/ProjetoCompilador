@@ -32,6 +32,7 @@ typedef struct
 }TInfoAtomo;
 
 
+TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_linha, int *pos);
 void descartar_delimitadores(char* buffer, int *conta_linha, int *pos);
 TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int* pos);
 TInfoAtomo reconhece_numero(char* buffer, int* pos);

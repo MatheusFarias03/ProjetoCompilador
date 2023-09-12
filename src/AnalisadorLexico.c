@@ -29,12 +29,8 @@ void descartar_delimitadores(char* buffer, int *conta_linha, int *pos)
 }
 
 
-TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
+TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_linha, int *pos)
 {
-	TInfoAtomo infoAtomo;
-	
-	descartar_delimitadores(buffer, conta_linha, pos);
-
 	// Checar comentarios.
 	if(buffer[*pos] == '/')
 	{
@@ -57,9 +53,8 @@ TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
 			{
 				(*pos)++;
 				if(buffer[*pos]=='\n')
-				{
 					(*conta_linha)++;
-				}
+				
 			} while (buffer[*pos] != '*' && buffer[(*pos)+1] != '/');
 			descartar_delimitadores(buffer, conta_linha, pos);
 			(*pos) += 2;
@@ -67,33 +62,39 @@ TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int *pos)
 
 		infoAtomo.atomo = COMENTARIO;
 		infoAtomo.linha = *conta_linha;
-		return infoAtomo;
 	}
+	return infoAtomo;
+}
+
+
+TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
+{
+	TInfoAtomo infoAtomo = {ERRO, 0, 0.0, ""};
+	
+	descartar_delimitadores(buffer, conta_linha, pos);
+
+	// Checar comentarios.
+	infoAtomo = reconhece_comentario(infoAtomo, buffer, conta_linha, pos);
+	if(infoAtomo.atomo == COMENTARIO)
+		return infoAtomo;
 
 	if(isdigit(buffer[*pos]))
-	{
 		infoAtomo = reconhece_numero(buffer, pos);
-	}
+	
 	else if(islower(buffer[*pos]))
-	{
 		infoAtomo = reconhece_id(buffer, pos);
-	}
+	
 	else if(buffer[*pos] == '+')
-	{
 		infoAtomo.atomo = OP_SOMA;
-	}
+	
 	else if(buffer[*pos] == '*')
-	{
 		infoAtomo.atomo = OP_MULT;
-	}
+	
 	else if(buffer[*pos] == '\x0')
-	{
 		infoAtomo.atomo = EOS;
-	}
+	
 	else
-	{
 		infoAtomo.atomo = ERRO;
-	}
 
 	infoAtomo.linha = *conta_linha;
 	return infoAtomo;

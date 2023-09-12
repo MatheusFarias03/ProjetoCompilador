@@ -59,21 +59,16 @@ int main()
 		lookahead = infoAtomo.atomo;
 
 		if(infoAtomo.atomo == NUMERO)
-		{
 			printf("#%3d:NUMERO atributo = [%.2f]\n", infoAtomo.linha, infoAtomo.atributo_numero);
-		}
+		
 		else if(infoAtomo.atomo == IDENTIFICADOR)
-		{
 			printf("#%3d:IDENTIFICADOR atributo = [%s]\n", infoAtomo.linha, infoAtomo.atributo_ID);
-		}
+		
 		else if(infoAtomo.atomo == EOS)
-		{
 			printf("#%3d:Analise Lexica encerrada com sucesso.\n", infoAtomo.linha);
-		}
+		
 		else if(infoAtomo.atomo == ERRO)
-		{
 			printf("#%3d:Erro Lexico\n",infoAtomo.linha);
-		}
 
 	} while(infoAtomo.atomo != EOS && infoAtomo.atomo != ERRO);
 
