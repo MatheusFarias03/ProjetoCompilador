@@ -24,32 +24,7 @@ int main()
 	int conta_linha = 1;
 	int pos = 0; // Posicao do caractere no buffer.
 
-	// Leitura do "arquivo_fonte.txt".
-	arquivo = fopen("src/arquivo_fonte.txt", "r");
-
-	if(arquivo == NULL)
-	{
-		printf("Erro ao abrir o arquivo.\n");
-		return 1;
-	}
-
-	// Determina o tamanho do arquivo.
-	fseek(arquivo, 0, SEEK_END);
-	long tamanho = ftell(arquivo);
-	fseek(arquivo, 0, SEEK_SET);
-
-	buffer = (char*)malloc(tamanho + 1);
-
-	if(buffer == NULL)
-	{
-		printf("Erro ao alocar memoria.\n");
-		fclose(arquivo);
-		return 1;
-	}
-
-	// Ler caracteres do arquivo para o buffer.
-	fread(buffer, sizeof(char), tamanho, arquivo);
-	buffer[tamanho] = '\0';
+	ler_arquivo(arquivo, &buffer);
 
 	printf("Realizando analise lexica...\n");
 

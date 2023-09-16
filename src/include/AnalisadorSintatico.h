@@ -10,9 +10,10 @@
  */
 
 #ifndef _ANALISADOR_SINTATICO_H_
-#define _ANALISADOR_SINTATICO_H
+#define _ANALISADOR_SINTATICO_H_
 
 #include "AnalisadorLexico.h"
+#include "Itens.h"
 
 void E(TAtomo lookahead, char *buffer, int *conta_linha, int *pos);
 void consome(TAtomo atomo, TAtomo lookahead, char *buffer, int *conta_linha, int *pos);

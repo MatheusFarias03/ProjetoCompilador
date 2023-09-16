@@ -12,7 +12,7 @@ build/main.o: src/main.c build
 build:
 	mkdir build
 
-clean:
+uninstall:
 	rm -r build
 	rm -r Compilador
 

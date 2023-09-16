@@ -12,30 +12,23 @@
 #ifndef _ANALISADOR_LEXICO_H_
 #define _ANALISADOR_LEXICO_H_
 
-typedef enum
-{
-	ERRO,
-	COMENTARIO,
-	IDENTIFICADOR,
-	NUMERO,
-	OP_SOMA,
-	OP_MULT,
-	EOS
-}TAtomo;
-
-typedef struct
-{
-	TAtomo atomo;
-	int linha;
-	float atributo_numero;
-	char atributo_ID[16];
-}TInfoAtomo;
-
+#include "Itens.h"
+/*
+ * Esta função lê o conteúdo de um arquivo ("arquivo_fonte.txt") e o armazena
+ * em um buffer alocado dinamicamente. O tamanho do arquivo é determinado e
+ * o buffer é alocado de acordo. Certifique-se de liberar a memória alocada
+ * para o buffer após o uso.
+ */
+void ler_arquivo(FILE *arquivo, char **buffer);
 
 TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_linha, int *pos);
+
 void descartar_delimitadores(char* buffer, int *conta_linha, int *pos);
+
 TInfoAtomo obter_atomo(char* buffer, int *conta_linha, int* pos);
+
 TInfoAtomo reconhece_numero(char* buffer, int* pos);
+
 TInfoAtomo reconhece_id(char* buffer, int* pos);
 
 #endif
