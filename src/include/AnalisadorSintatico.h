@@ -15,7 +15,16 @@
 #include "AnalisadorLexico.h"
 #include "Itens.h"
 
-void E(TAtomo lookahead, char *buffer, int *conta_linha, int *pos);
-void consome(TAtomo atomo, TAtomo lookahead, char *buffer, int *conta_linha, int *pos);
+/*
+ * Esta função compara o átomo atual (lookahead) com um átomo esperado (atomo).
+ * Se eles forem iguais, a função obtém um novo átomo do buffer e atualiza a 
+ * estrutura TInfoAtomo com as informações do novo átomo. O lookahead também é 
+ * atualizado. Caso contrário, a função imprime uma mensagem de erro sintático 
+ * indicando o átomo esperado e o átomo encontrado, e encerra o programa.
+ */
+void consome(TInfoAtomo *InftoAtomo, TAtomo atomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <programa>::= "algoritmo identificador" ";" <bloco> "."
+void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
 #endif

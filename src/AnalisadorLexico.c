@@ -14,6 +14,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "include/AnalisadorLexico.h"
+#include "include/Itens.h"
 
 void ler_arquivo(FILE *arquivo, char **buffer)
 {
@@ -50,9 +51,8 @@ void descartar_delimitadores(char* buffer, int *conta_linha, int *pos)
 	while(buffer[*pos]==' ' || buffer[*pos]=='\n' || buffer[*pos]=='\t' || buffer[*pos]=='\r')
 	{
 		if(buffer[*pos]=='\n')
-		{
 			(*conta_linha)++;
-		}
+		
 		(*pos)++;
 	}
 }
@@ -112,6 +112,18 @@ TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
 	
 	else if(islower(buffer[*pos]))
 		infoAtomo = reconhece_id(buffer, pos);
+	
+	else if(buffer[*pos] == ';')
+	{
+		infoAtomo.atomo = PONTO_VIRGULA;
+		(*pos)++;
+	}
+	
+	else if(buffer[*pos] == '.')
+	{
+		infoAtomo.atomo = PONTO;
+		(*pos)++;
+	}
 	
 	else if(buffer[*pos] == '+')
 		infoAtomo.atomo = OP_SOMA;
@@ -212,5 +224,14 @@ q1:
     strncpy(infoAtomo.atributo_ID, buffer + init_id, (*pos) - init_id);
     infoAtomo.atributo_ID[(*pos) - init_id] = '\x0';
     infoAtomo.atomo  = IDENTIFICADOR;
+
+	reconhece_palavra_reservada(&infoAtomo);
+
     return infoAtomo;
+}
+
+void reconhece_palavra_reservada(TInfoAtomo *infoAtomo)
+{
+	if(strcmp(infoAtomo->atributo_ID, "algoritmo") == 0)
+		infoAtomo->atomo = ALGORITMO;
 }

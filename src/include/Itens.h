@@ -19,14 +19,23 @@
 */
 typedef enum
 {
+	ALGORITMO,
 	ERRO,
 	COMENTARIO,
 	IDENTIFICADOR,
 	NUMERO,
 	OP_SOMA,
 	OP_MULT,
+	PONTO,
+	PONTO_VIRGULA,
 	EOS
 }TAtomo;
+
+/* 
+ * Contem as strings que representam os diferentes tipos de atomo em TAtomo.
+ * Devem ser as mesmas e estar na mesma que as especificadas no enumerador.
+ */
+extern char* strAtomo[][30];
 
 /*
 * Struct utilizada para armazenar as informacões associadas a um atomo

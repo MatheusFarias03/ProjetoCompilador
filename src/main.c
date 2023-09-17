@@ -13,10 +13,12 @@
 #include <stdlib.h>
 #include "include/AnalisadorLexico.h"
 #include "include/AnalisadorSintatico.h"
+#include "include/Itens.h"
 
 int main()
 {
 	// Variaveis.
+
 	FILE *arquivo;
 	char *buffer; // Contem o arquivo em uma unica string.
 	TInfoAtomo infoAtomo; // Informacoes do atomo.
@@ -26,28 +28,15 @@ int main()
 
 	ler_arquivo(arquivo, &buffer);
 
-	printf("Realizando analise lexica...\n");
+	printf("\nAnalisando arquivo...\n");
 
-	do 
-	{
-		infoAtomo = obter_atomo(buffer, &conta_linha, &pos);
-		lookahead = infoAtomo.atomo;
+	infoAtomo = obter_atomo(buffer, &conta_linha, &pos);
+	lookahead = infoAtomo.atomo; 
 
-		if(infoAtomo.atomo == NUMERO)
-			printf("#%3d:NUMERO atributo = [%.2f]\n", infoAtomo.linha, infoAtomo.atributo_numero);
-		
-		else if(infoAtomo.atomo == IDENTIFICADOR)
-			printf("#%3d:IDENTIFICADOR atributo = [%s]\n", infoAtomo.linha, infoAtomo.atributo_ID);
-		
-		else if(infoAtomo.atomo == EOS)
-			printf("#%3d:Analise Lexica encerrada com sucesso.\n", infoAtomo.linha);
-		
-		else if(infoAtomo.atomo == ERRO)
-			printf("#%3d:Erro Lexico\n",infoAtomo.linha);
+	programa(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	consome(&infoAtomo, EOS, &lookahead, buffer, &conta_linha, &pos);
 
-	} while(infoAtomo.atomo != EOS && infoAtomo.atomo != ERRO);
-
-	printf("Fim do programa.");
+	printf("\nAnalise finalizada com sucesso.\n");
 
 	free(buffer);
 	fclose(arquivo);

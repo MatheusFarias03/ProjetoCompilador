@@ -1,7 +1,2 @@
-// Comentario...
-abc_d 10.0  f 20.0
-/*
- Multiplo comentario...
-*/
-30.0  
-40.0
+algoritmo algo_r ;
+.
