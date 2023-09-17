@@ -44,6 +44,8 @@ void ler_arquivo(FILE *arquivo, char **buffer)
 	// Ler caracteres do arquivo para o buffer.
 	fread(*buffer, sizeof(char), tamanho, arquivo);
 	(*buffer)[tamanho] = '\0';
+
+	fclose(arquivo);
 }
 
 void descartar_delimitadores(char* buffer, int *conta_linha, int *pos)
@@ -124,12 +126,6 @@ TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
 		infoAtomo.atomo = PONTO;
 		(*pos)++;
 	}
-	
-	else if(buffer[*pos] == '+')
-		infoAtomo.atomo = OP_SOMA;
-	
-	else if(buffer[*pos] == '*')
-		infoAtomo.atomo = OP_MULT;
 	
 	else if(buffer[*pos] == '\x0')
 		infoAtomo.atomo = EOS;
@@ -229,6 +225,7 @@ q1:
 
     return infoAtomo;
 }
+
 
 void reconhece_palavra_reservada(TInfoAtomo *infoAtomo)
 {

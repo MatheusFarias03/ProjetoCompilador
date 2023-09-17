@@ -37,27 +37,3 @@ void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta
     consome(InfoAtomo, PONTO_VIRGULA, lookahead, buffer, conta_linha, pos);
     consome(InfoAtomo, PONTO, lookahead, buffer, conta_linha, pos);
 }
-/*
-Isso aqui serve de exemplo.
-void E(TAtomo lookahead, char *buffer, int *conta_linha, int *pos)
-{
-    switch (lookahead)
-    {
-    case OP_SOMA:
-        consome(OP_SOMA, buffer, conta_linha, pos);
-        break;
-
-    case OP_MULT:
-        consome(OP_MULT, buffer, conta_linha, pos);
-        break;
-
-    case IDENTIFICADOR:
-        consome(IDENTIFICADOR, buffer, conta_linha, pos);
-        break;
-    
-    default:
-        consome(NUMERO, buffer, conta_linha, pos);
-        break;
-    }
-}
-*/

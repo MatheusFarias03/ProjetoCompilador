@@ -39,7 +39,6 @@ int main()
 	printf("\nAnalise finalizada com sucesso.\n");
 
 	free(buffer);
-	fclose(arquivo);
 
 	return 0;
 }

@@ -7,8 +7,6 @@ char* strAtomo[][30] = {
 	"COMENTARIO", 
 	"IDENTIFICADOR",
 	"NUMERO",
-	"OP_SOMA",
-	"OP_MULT",
 	"PONTO",
 	"PONTO_VIRGULA",
 	"EOS"

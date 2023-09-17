@@ -60,7 +60,11 @@ TInfoAtomo reconhece_numero(char* buffer, int* pos);
  */
 TInfoAtomo reconhece_id(char* buffer, int* pos);
 
-
+/*
+ * Reconhece as palavras reservadas da linguagem Portugol. As palavras são previamente
+ * identificadas pela funcão 'reconhece_id()' e depois esta funcão é chamada para identificar
+ * se o identificador não é na verdade uma palavra reservada.
+ */
 void reconhece_palavra_reservada(TInfoAtomo *infoAtomo);
 
 #endif
