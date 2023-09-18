@@ -15,25 +15,63 @@
 #include "include/AnalisadorSintatico.h"
 #include "include/AnalisadorLexico.h"
 
-void consome(TInfoAtomo *InfoAtomo, TAtomo atomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+
+void retornar_erro(TInfoAtomo *InfoAtomo, TAtomo atomo, TAtomo *lookahead)
+{
+    printf("#%03d: Erro sintatico: esperado [%s] encontrado [%s]\n", 
+    InfoAtomo->linha, strAtomo[0][atomo], strAtomo[0][*lookahead]);
+    exit(1);
+}
+
+
+int consome(TInfoAtomo *InfoAtomo, TAtomo atomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
     if (*lookahead == atomo)
     {
         *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
         *lookahead = InfoAtomo->atomo;
+        return 0;
     }
-    else
-    {
-        printf("#%03d: Erro sintatico: esperado [%s] encontrado [%s]\n", 
-        InfoAtomo->linha, *strAtomo[atomo], *strAtomo[*lookahead]);
-        exit(1);
-    }
+    return 1;
 }
+
 
 void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
-    consome(InfoAtomo, ALGORITMO, lookahead, buffer, conta_linha, pos);
-    consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos);
-    consome(InfoAtomo, PONTO_VIRGULA, lookahead, buffer, conta_linha, pos);
-    consome(InfoAtomo, PONTO, lookahead, buffer, conta_linha, pos);
+    if(consome(InfoAtomo, ALGORITMO, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ALGORITMO, lookahead);
+    
+    if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, IDENTIFICADOR, lookahead);
+    
+    if(consome(InfoAtomo, PONTO_VIRGULA, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, PONTO_VIRGULA, lookahead);
+    
+    bloco(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    
+    if(consome(InfoAtomo, PONTO, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, PONTO, lookahead);
+}
+
+
+void bloco(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char* buffer, int *conta_linha, int *pos)
+{
+
+}
+
+
+void tipo(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    int pos_inicial = *pos;
+
+    if(consome(InfoAtomo, LOGICO, lookahead, buffer, conta_linha, pos) == 1)
+    {
+        /*
+         * Volta para onde estava e analisa e analisa mais uma vez para verificar
+         * caso seja um atomo INTEIRO e não um LOGICO.
+         */
+        *pos = pos_inicial; 
+        if(consome(InfoAtomo, INTEIRO, lookahead, buffer, conta_linha, pos) == 1)
+            retornar_erro(InfoAtomo, INTEIRO, lookahead);
+    }
 }

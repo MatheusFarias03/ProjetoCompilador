@@ -157,7 +157,7 @@ q1:
     	(*pos)++;
         goto q1;
     }
-    if( buffer[*pos]=='.' )
+    if(buffer[*pos]=='.')
 	{
         (*pos)++;
         goto q2;
@@ -231,4 +231,10 @@ void reconhece_palavra_reservada(TInfoAtomo *infoAtomo)
 {
 	if(strcmp(infoAtomo->atributo_ID, "algoritmo") == 0)
 		infoAtomo->atomo = ALGORITMO;
+
+	if(strcmp(infoAtomo->atributo_ID, "inteiro") == 0)
+		infoAtomo->atomo = INTEIRO;
+	
+	if(strcmp(infoAtomo->atributo_ID, "logico") == 0)
+		infoAtomo->atomo = LOGICO;
 }

@@ -33,7 +33,8 @@ int main()
 	infoAtomo = obter_atomo(buffer, &conta_linha, &pos);
 	lookahead = infoAtomo.atomo; 
 
-	programa(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	//programa(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	tipo(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
 	consome(&infoAtomo, EOS, &lookahead, buffer, &conta_linha, &pos);
 
 	printf("\nAnalise finalizada com sucesso.\n");

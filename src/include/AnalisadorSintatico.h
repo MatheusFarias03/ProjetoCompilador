@@ -16,15 +16,29 @@
 #include "Itens.h"
 
 /*
+* Esta função imprime uma mensagem de erro indicando a linha onde ocorreu o erro,
+* o token esperado e o token encontrado. Em seguida, encerra o programa.
+*/
+void retornar_erro(TInfoAtomo *InfoAtomo, TAtomo atomo, TAtomo *lookahead);
+
+/*
  * Esta função compara o átomo atual (lookahead) com um átomo esperado (atomo).
  * Se eles forem iguais, a função obtém um novo átomo do buffer e atualiza a 
  * estrutura TInfoAtomo com as informações do novo átomo. O lookahead também é 
  * atualizado. Caso contrário, a função imprime uma mensagem de erro sintático 
- * indicando o átomo esperado e o átomo encontrado, e encerra o programa.
+ * indicando o átomo esperado e o átomo encontrado, e retorna 1, que deve ser
+ * interpretado como 'exit(1)' ao sair da funcão.
  */
-void consome(TInfoAtomo *InftoAtomo, TAtomo atomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+int consome(TInfoAtomo *InftoAtomo, TAtomo atomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
 // <programa>::= "algoritmo identificador" ";" <bloco> "."
 void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <bloco>::= [ <declaracao_de_variaveis> ] <comando_composto>
+void bloco(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+
+// <tipo> ::= "inteiro" | "logico"
+void tipo(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
 #endif

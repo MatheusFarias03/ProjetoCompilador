@@ -1,2 +1,1 @@
-algoritmo algo_r ;
-.
+fadf
