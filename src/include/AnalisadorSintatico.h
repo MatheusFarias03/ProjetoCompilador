@@ -37,8 +37,28 @@ void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta
 // <bloco>::= [ <declaracao_de_variaveis> ] <comando_composto>
 void bloco(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
+// <`declaracao_de_variaveis`> ::= **variavel** {<`lista_variavel`> “:” <`tipo`> “;”}+
+void declaracao_de_variaveis(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`lista_variavel`> ::= **identificador** { “,” **identificador** }
+void lista_variavel(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
 // <tipo> ::= "inteiro" | "logico"
 void tipo(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`expressao`> ::= <`expressao_simples`> [<`relacional`> <`expressao_simples`> ]
+void expressao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`relacional`> ::= “<” | “<=” | “=” | “#” | “>” | “>=”
+void relacional(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`expressao_simples`> ::= [“+” | “−”] <`termo`> { (“+” | “−” | **ou** ) <`termo`> }
+void expressao_simples(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`termo`> ::= <`fator`> { ( “`*`” | **div** | **e** ) <`fator`> }
+void termo(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`fator`> ::= **identificador** | **numero** | **verdadeiro** | **falso** | “(” <`expressao`> “)”
+void fator(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
 #endif

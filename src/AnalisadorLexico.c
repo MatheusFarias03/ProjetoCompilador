@@ -70,30 +70,44 @@ TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_l
 		// Se for comentario de apenas uma linha.
 		if(buffer[*pos] == '/')
 		{
+			printf("#%03d: %s \n", *conta_linha, strAtomo[0][COMENTARIO]);
 			do
 			{
 				(*pos)++;
 			} while (buffer[*pos] != '\n');
 			descartar_delimitadores(buffer, conta_linha, pos);
+			infoAtomo.atomo = COMENTARIO;
 		}
 
 		// Se for comentario de multiplas linhas.
 		else if(buffer[*pos] == '*')
 		{
+			printf("#%03d: %s \n", *conta_linha, strAtomo[0][COMENTARIO]);
 			do
 			{
 				(*pos)++;
 				if(buffer[*pos]=='\n')
+				{
 					(*conta_linha)++;
-				
+					printf("#%03d: %s \n", *conta_linha, strAtomo[0][COMENTARIO]);
+				}
 			} while (buffer[*pos] != '*' && buffer[(*pos)+1] != '/');
-			descartar_delimitadores(buffer, conta_linha, pos);
 			(*pos) += 2;
+			descartar_delimitadores(buffer, conta_linha, pos);
+			infoAtomo.atomo = COMENTARIO;
 		}
-
-		infoAtomo.atomo = COMENTARIO;
-		infoAtomo.linha = *conta_linha;
+		// Se nao for nenhum dos dois, ERRO.
+		else
+		{
+			infoAtomo.atomo = ERRO;
+		}
 	}
+	// Se nao for '/', atomo recebe ERRO.
+	else 
+	{
+		infoAtomo.atomo = ERRO;
+	}
+	infoAtomo.linha = *conta_linha;
 	return infoAtomo;
 }
 
@@ -106,18 +120,33 @@ TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
 
 	// Checar comentarios.
 	infoAtomo = reconhece_comentario(infoAtomo, buffer, conta_linha, pos);
-	if(infoAtomo.atomo == COMENTARIO)
-		return infoAtomo;
+	while (infoAtomo.atomo == COMENTARIO)
+	{
+		infoAtomo = reconhece_comentario(infoAtomo, buffer, conta_linha, pos);
+	}
+	
 
 	if(isdigit(buffer[*pos]))
 		infoAtomo = reconhece_numero(buffer, pos);
 	
-	else if(islower(buffer[*pos]))
+	else if(isalpha(buffer[*pos]))
 		infoAtomo = reconhece_id(buffer, pos);
 	
 	else if(buffer[*pos] == ';')
 	{
 		infoAtomo.atomo = PONTO_VIRGULA;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == ':')
+	{
+		infoAtomo.atomo = DOIS_PONTOS;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == ',')
+	{
+		infoAtomo.atomo = VIRGULA;
 		(*pos)++;
 	}
 	
@@ -126,12 +155,86 @@ TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
 		infoAtomo.atomo = PONTO;
 		(*pos)++;
 	}
+
+	else if(buffer[*pos] == '<')
+	{
+		infoAtomo.atomo = MENOR;
+		(*pos)++;
+		
+		if(buffer[*pos] == '=')
+		{
+			infoAtomo.atomo = MENOR_IGUAL;
+			(*pos)++;
+		}
+	}
+
+	else if(buffer[*pos] == '>')
+	{
+		infoAtomo.atomo = MAIOR;
+		(*pos)++;
+		
+		if(buffer[*pos] == '=')
+		{
+			infoAtomo.atomo = MAIOR_IGUAL;
+			(*pos)++;
+		}
+	}
+
+	else if(buffer[*pos] == '=')
+	{
+		infoAtomo.atomo = IGUAL;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == '#')
+	{
+		infoAtomo.atomo = CARDINAL;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == '(')
+	{
+		infoAtomo.atomo = ABRE_PARENTESES;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == ')')
+	{
+		infoAtomo.atomo = FECHA_PARENTESES;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == '+')
+	{
+		infoAtomo.atomo = MAIS;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == '-')
+	{
+		infoAtomo.atomo = MENOS;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == '*')
+	{
+		infoAtomo.atomo = ASTERISCO;
+		(*pos)++;
+	}
+
+	else if(buffer[*pos] == '/')
+	{
+		infoAtomo.atomo = DIV;
+		(*pos)++;
+	}
 	
 	else if(buffer[*pos] == '\x0')
 		infoAtomo.atomo = EOS;
 	
 	else
 		infoAtomo.atomo = ERRO;
+
+	printf("#%03d: %s \n", *conta_linha, strAtomo[0][infoAtomo.atomo]);
 
 	infoAtomo.linha = *conta_linha;
 	return infoAtomo;
@@ -157,16 +260,20 @@ q1:
     	(*pos)++;
         goto q1;
     }
-    if(buffer[*pos]=='.')
+    if(isalpha(buffer[*pos]))
 	{
-        (*pos)++;
-        goto q2;
-    }
-    // Erro: nao pertence ao alfabeto do analisador lexico.
-    return infoAtomo;
+		// Retorna o infoAtomo com erro.
+		return infoAtomo;
+	}
+	if(buffer[*pos] == 'E' || buffer[*pos] == 'e')
+	{
+		(*pos)++;
+		goto q2;
+	}
+	goto final;
 
 q2:
-	if(isdigit(buffer[*pos]))
+	if(buffer[*pos] == '+' || buffer[*pos] == '-')
 	{
 		(*pos)++;
 		goto q3;
@@ -185,6 +292,8 @@ q3:
 		// Retorna o infoAtomo com erro.
 		return infoAtomo;
 	}
+
+final:
 	strncpy(infoAtomo.atributo_ID, buffer + ini_num, (*pos) - ini_num);
     infoAtomo.atributo_ID[(*pos) - ini_num] = '\x0';
     infoAtomo.atributo_numero = atof(infoAtomo.atributo_ID);
@@ -199,7 +308,7 @@ TInfoAtomo reconhece_id(char* buffer, int *pos)
     TInfoAtomo infoAtomo;
     infoAtomo.atomo = ERRO;
 
-    if(islower(buffer[*pos]))
+    if(isalpha(buffer[*pos]))
 	{
 		(*pos)++;
         goto q1;
@@ -207,14 +316,14 @@ TInfoAtomo reconhece_id(char* buffer, int *pos)
     return infoAtomo;
 
 q1:
-	if(islower(buffer[*pos]) || isdigit(buffer[*pos]) || buffer[*pos] == '_')
+	if(isalpha(buffer[*pos]) || isdigit(buffer[*pos]) || buffer[*pos] == '_')
 	{
         (*pos)++;
         goto q1;
     }
     
 	// Se houver uma letra maiuscula ou houver mais de 15 caracteres, retorna infoAtomo com erro. 
-	if(isupper(buffer[*pos]) || (*pos) - init_id > 15)
+	if((*pos) - init_id > 15)
     	return infoAtomo;
 
     strncpy(infoAtomo.atributo_ID, buffer + init_id, (*pos) - init_id);
@@ -237,4 +346,19 @@ void reconhece_palavra_reservada(TInfoAtomo *infoAtomo)
 	
 	if(strcmp(infoAtomo->atributo_ID, "logico") == 0)
 		infoAtomo->atomo = LOGICO;
+
+	if(strcmp(infoAtomo->atributo_ID, "variavel") == 0)
+		infoAtomo->atomo = VARIAVEL;
+	
+	if(strcmp(infoAtomo->atributo_ID, "verdadeiro") == 0)
+		infoAtomo->atomo = VERDADEIRO;
+
+	if(strcmp(infoAtomo->atributo_ID, "falso") == 0)
+		infoAtomo->atomo = FALSO;
+
+	if(strcmp(infoAtomo->atributo_ID, "OU") == 0)
+		infoAtomo->atomo = OU;
+
+	if(strcmp(infoAtomo->atributo_ID, "E") == 0)
+		infoAtomo->atomo = E;
 }

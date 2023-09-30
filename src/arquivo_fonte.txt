@@ -1,1 +1,5 @@
-fadf
+// declaracao de variaveis.
+variavel id : inteiro;
+coisa : logico; 
+lugar, casa: inteiro;
+12 - 2

@@ -34,7 +34,9 @@ int main()
 	lookahead = infoAtomo.atomo; 
 
 	//programa(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
-	tipo(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	declaracao_de_variaveis(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	expressao_simples(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	
 	consome(&infoAtomo, EOS, &lookahead, buffer, &conta_linha, &pos);
 
 	printf("\nAnalise finalizada com sucesso.\n");

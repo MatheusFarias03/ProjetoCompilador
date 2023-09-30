@@ -12,15 +12,36 @@
 #include <stdio.h>
 #include "include/Itens.h"
 
-char* strAtomo[][30] = {
+char* strAtomo[][50] = {
 	"ALGORITMO",
 	"ERRO", 
 	"COMENTARIO", 
 	"IDENTIFICADOR",
+	"VARIAVEL",
 	"NUMERO",
 	"LOGICO",
 	"INTEIRO",
 	"PONTO",
+	"VIRGULA",
 	"PONTO_VIRGULA",
+	"DOIS_PONTOS",
+	"MENOR",
+	"MENOR_IGUAL",
+	"MAIOR",
+	"MAIOR_IGUAL",
+	"IGUAL",
+	"CARDINAL",
+	"RELACIONAL",
+	"FATOR",
+	"ABRE_PARENTESES",
+	"FECHA_PARENTESES",
+	"VERDADEIRO",
+	"FALSO",
+	"MAIS",
+	"MENOS",
+	"OU",
+	"E",
+	"DIV",
+	"ASTERISCO",
 	"EOS"
 };

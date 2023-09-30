@@ -11,7 +11,7 @@ Na implementação do Compilador o analisador léxico deve atender as necessidad
 A `sintaxe` da linguagem `Portugol` está descrita na notação `EBNF`, os `<não-terminais>` da gramática são nomes entre parênteses angulares `< e >` e os símbolos **terminais** (átomos do analisador léxico) estão em **negrito** ou entre aspas (Ex: “;”).
 
 
-<`programa`>::= **algoritmo identificador** “;” <`bloco`> “.”
+<`programa`>::= **algoritmo** **identificador** “;” <`bloco`> “.”
 
 <`bloco`>::= [ <`declaracao_de_variaveis`> ] <`comando_composto`>
 

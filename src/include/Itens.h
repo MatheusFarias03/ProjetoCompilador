@@ -23,11 +23,32 @@ typedef enum
 	ERRO,
 	COMENTARIO,
 	IDENTIFICADOR,
+	VARIAVEL,
 	NUMERO,
 	LOGICO,
 	INTEIRO,
 	PONTO,
+	VIRGULA,
 	PONTO_VIRGULA,
+	DOIS_PONTOS,
+	MENOR,
+	MENOR_IGUAL,
+	MAIOR,
+	MAIOR_IGUAL,
+	IGUAL,
+	CARDINAL,
+	RELACIONAL,
+	FATOR,
+	ABRE_PARENTESES,
+	FECHA_PARENTESES,
+	VERDADEIRO,
+	FALSO,
+	MAIS,
+	MENOS,
+	OU,
+	E,
+	DIV,
+	ASTERISCO,
 	EOS
 }TAtomo;
 
@@ -35,7 +56,7 @@ typedef enum
  * Contem as strings que representam os diferentes tipos de atomo em TAtomo.
  * Devem ser as mesmas e estar na mesma que as especificadas no enumerador.
  */
-extern char* strAtomo[][30];
+extern char* strAtomo[][50];
 
 /*
 * Struct utilizada para armazenar as informacões associadas a um atomo
