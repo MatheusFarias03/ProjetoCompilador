@@ -142,6 +142,12 @@ TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
 	{
 		infoAtomo.atomo = DOIS_PONTOS;
 		(*pos)++;
+
+		if(buffer[*pos] == '=')
+		{
+			infoAtomo.atomo = ATRIBUICAO;
+			(*pos)++;
+		}
 	}
 
 	else if(buffer[*pos] == ',')
@@ -361,4 +367,31 @@ void reconhece_palavra_reservada(TInfoAtomo *infoAtomo)
 
 	if(strcmp(infoAtomo->atributo_ID, "E") == 0)
 		infoAtomo->atomo = E;
+
+	if(strcmp(infoAtomo->atributo_ID, "leia") == 0)
+		infoAtomo->atomo = LEIA;
+
+	if(strcmp(infoAtomo->atributo_ID, "enquanto") == 0)
+		infoAtomo->atomo = ENQUANTO;
+
+	if(strcmp(infoAtomo->atributo_ID, "faca") == 0)
+		infoAtomo->atomo = FACA;
+
+	if(strcmp(infoAtomo->atributo_ID, "se") == 0)
+		infoAtomo->atomo = SE;
+
+	if(strcmp(infoAtomo->atributo_ID, "senao") == 0)
+		infoAtomo->atomo = SENAO;
+
+	if(strcmp(infoAtomo->atributo_ID, "entao") == 0)
+		infoAtomo->atomo = ENTAO;
+
+	if(strcmp(infoAtomo->atributo_ID, "escreva") == 0)
+		infoAtomo->atomo = ESCREVA;
+
+	if(strcmp(infoAtomo->atributo_ID, "inicio") == 0)
+		infoAtomo->atomo = INICIO;
+
+	if(strcmp(infoAtomo->atributo_ID, "fim") == 0)
+		infoAtomo->atomo = FIM;
 }

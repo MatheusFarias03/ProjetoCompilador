@@ -1,5 +1,15 @@
-// declaracao de variaveis.
-variavel id : inteiro;
-coisa : logico; 
-lugar, casa: inteiro;
-12 - 2
+/*
+programa le dois numeros
+inteiros e encontra o maior
+*/
+algoritmo exemplo2;
+    variavel maior,n1,n2:inteiro;
+inicio
+    leia(n1);
+    leia(n2);
+    se( n1 > n2 ) entao
+        maior := n1
+    senao
+        maior := n2;
+    escreva(maior) // imprime o maior valor
+fim.

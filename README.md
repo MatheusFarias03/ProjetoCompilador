@@ -100,7 +100,7 @@ inicio
     senao
         maior := n2;
     escreva(maior) // imprime o maior valor
-end.
+fim.
 ```
 
 O para cada átomo reconhecido o compilador imprime as seguintes informações baseado nas informações contidas na estrutura **TInfoAtomo**, e ao final informa que a analise terminou com sucesso:

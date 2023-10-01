@@ -33,9 +33,7 @@ int main()
 	infoAtomo = obter_atomo(buffer, &conta_linha, &pos);
 	lookahead = infoAtomo.atomo; 
 
-	//programa(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
-	declaracao_de_variaveis(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
-	expressao_simples(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
+	programa(&infoAtomo, &lookahead, buffer, &conta_linha, &pos);
 	
 	consome(&infoAtomo, EOS, &lookahead, buffer, &conta_linha, &pos);
 

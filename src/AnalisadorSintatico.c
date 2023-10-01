@@ -56,7 +56,12 @@ void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta
 
 void bloco(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char* buffer, int *conta_linha, int *pos)
 {
+    if(*lookahead == VARIAVEL)
+    {
+        declaracao_de_variaveis(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    }
 
+    comando_composto(InfoAtomo, lookahead, buffer, conta_linha, pos);
 }
 
 
@@ -190,7 +195,7 @@ void fator(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_li
             *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
             *lookahead = InfoAtomo->atomo;
             
-            // TODO: expressao();
+            expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
             
             if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
                 retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
@@ -215,8 +220,13 @@ void fator(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_li
 void expressao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
     expressao_simples(InfoAtomo, lookahead, buffer, conta_linha, pos);
-    // TODO: relacional();
-    // TODO: expressao_simples();
+
+    if( *lookahead == IGUAL || *lookahead == MENOR_IGUAL || *lookahead == MAIOR_IGUAL ||
+        *lookahead == MENOR || *lookahead == MAIOR || *lookahead == CARDINAL)
+    {
+        relacional(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        expressao_simples(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    }
 }
 
 
@@ -256,4 +266,165 @@ termo_loop:
         goto termo_loop;
     }
     
+}
+
+
+void comando_composto(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    if(consome(InfoAtomo, INICIO, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, INICIO, lookahead);
+    
+    comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+loop_cmd_compst:
+    if(*lookahead == PONTO_VIRGULA)
+    {
+        *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
+        *lookahead = InfoAtomo->atomo;
+        comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        goto loop_cmd_compst;
+    }
+
+    if(consome(InfoAtomo, FIM, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, FIM, lookahead);
+}
+
+
+void comando(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    switch (*lookahead)
+    {
+    case IDENTIFICADOR:
+        comando_atribuicao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        break;
+
+    case SE:
+        comando_se(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        break;
+
+    case ENQUANTO:
+        comando_enquanto(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        break;
+
+    case LEIA:
+        comando_entrada(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        break;
+
+    case ESCREVA:
+        comando_saida(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        break;
+
+    case INICIO:
+        comando_composto(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        break;
+    
+    default:
+        retornar_erro(InfoAtomo, COMANDO, lookahead);
+        break;
+    }
+    if( *lookahead == IDENTIFICADOR || *lookahead == SE || *lookahead == ENQUANTO ||
+        *lookahead == LEIA || *lookahead == ESCREVA || *lookahead == INICIO)
+    {
+
+    }
+}
+
+
+void comando_atribuicao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, IDENTIFICADOR, lookahead);
+    
+    if(consome(InfoAtomo, ATRIBUICAO, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ATRIBUICAO, lookahead);
+
+    expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+}
+
+
+void comando_entrada(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    if(consome(InfoAtomo, LEIA, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, LEIA, lookahead);
+    
+    if(consome(InfoAtomo, ABRE_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
+    
+    lista_variavel(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+    if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
+}
+
+
+void comando_enquanto(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    if(consome(InfoAtomo, ENQUANTO, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ENQUANTO, lookahead);
+
+    if(consome(InfoAtomo, ABRE_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
+
+    expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+    if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
+    
+    if(consome(InfoAtomo, FACA, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, FACA, lookahead);
+
+    comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+}
+
+
+void comando_se(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    if(consome(InfoAtomo, SE, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, SE, lookahead);
+
+    if(consome(InfoAtomo, ABRE_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
+
+    expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+    if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
+    
+    if(consome(InfoAtomo, ENTAO, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ENTAO, lookahead);
+
+    comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+    if(*lookahead == SENAO)
+    {
+        if(consome(InfoAtomo, SENAO, lookahead, buffer, conta_linha, pos) == 1)
+            retornar_erro(InfoAtomo, SENAO, lookahead);
+
+        comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    }
+}
+
+
+void comando_saida(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
+{
+    if(consome(InfoAtomo, ESCREVA, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ESCREVA, lookahead);
+    
+    if(consome(InfoAtomo, ABRE_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
+    
+    expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+loop_cmd_saida:
+    if(*lookahead == VIRGULA)
+    {
+        *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
+        *lookahead = InfoAtomo->atomo;
+
+        expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        goto loop_cmd_saida;
+    }
+
+    if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
+        retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
 }

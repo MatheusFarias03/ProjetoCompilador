@@ -46,6 +46,27 @@ void lista_variavel(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int 
 // <tipo> ::= "inteiro" | "logico"
 void tipo(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 
+// <comando_composto> ::= inicio <comando> { “;” <comando>} fim
+void comando_composto(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`comando`> ::= <`comando_atribuicao`> | <`comando_se`> | <`comando_enquanto`> | <`comando_entrada`> | <`comando_saida`> | <`comando_composto`>
+void comando(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`comando_atribuicao`> ::= **identificador** “:=” <`expressao`>
+void comando_atribuicao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`comando_entrada`> ::= **leia** “(“ <`lista_variavel`> “)”
+void comando_entrada(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`comando_enquanto`> ::= **enquanto** “(” <`expressao`> “)” **faca** <`comando`>
+void comando_enquanto(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <`comando_se`> ::= se “(” <`expressao`> “)” **entao** <`comando`> [**senao** <`comando`>]
+void comando_se(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
+// <comando_saida> ::= escreva “(“ <expressao> { “,” <expressao> } “)”
+void comando_saida(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
+
 // <`expressao`> ::= <`expressao_simples`> [<`relacional`> <`expressao_simples`> ]
 void expressao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos);
 

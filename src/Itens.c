@@ -43,5 +43,16 @@ char* strAtomo[][50] = {
 	"E",
 	"DIV",
 	"ASTERISCO",
+	"ATRIBUICAO",
+	"LEIA",
+	"ENQUANTO",
+	"FACA",
+	"SE",
+	"SENAO",
+	"ENTAO",
+	"ESCREVA",
+	"INICIO",
+	"FIM",
+	"COMANDO",
 	"EOS"
 };
