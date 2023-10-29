@@ -81,4 +81,13 @@ typedef struct
 	char atributo_ID[16]; // Identificador, se for uma string.
 }TInfoAtomo;
 
+// Lista para manter o registro das variaveis declaradas no programa.
+extern TInfoAtomo *lista_variaveis;
+
+// Tamanho maximo para a lista_variaveis.
+extern int lv_t_max;
+
+// Tamanho atual para a lista_variaveis.
+extern int lv_t_atual;
+
 #endif

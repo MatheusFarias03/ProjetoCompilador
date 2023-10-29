@@ -56,3 +56,12 @@ char* strAtomo[][50] = {
 	"COMANDO",
 	"EOS"
 };
+
+// Lista para manter o registro das variaveis declaradas no programa.
+TInfoAtomo *lista_variaveis = NULL;
+
+// Tamanho maximo para a lista_variaveis.
+int lv_t_max = 0;
+
+// Tamanho atual para a lista_variaveis.
+int lv_t_atual = 0;

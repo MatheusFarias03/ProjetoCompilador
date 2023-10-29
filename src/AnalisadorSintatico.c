@@ -14,6 +14,7 @@
 #include "include/Itens.h"
 #include "include/AnalisadorSintatico.h"
 #include "include/AnalisadorLexico.h"
+#include "include/AnalisadorSemantico.h"
 
 
 void retornar_erro(TInfoAtomo *InfoAtomo, TAtomo atomo, TAtomo *lookahead)
@@ -72,10 +73,22 @@ void declaracao_de_variaveis(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buf
     {
 
 verifica_variaveis:
+        
+        // Cria a lista de variaveis.
+        if (lista_variaveis == NULL)
+        {
+            criar_lista_variavel(1);
+        }
+        // Adicionar elemento na lista de variaveis.
+        inserir_variavel_na_lista(InfoAtomo);
+
         lista_variavel(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        
         if(consome(InfoAtomo, DOIS_PONTOS, lookahead, buffer, conta_linha, pos) == 1)
             retornar_erro(InfoAtomo, DOIS_PONTOS, lookahead);
+        
         tipo(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        
         if(consome(InfoAtomo, PONTO_VIRGULA, lookahead, buffer, conta_linha, pos) == 1)
             retornar_erro(InfoAtomo, PONTO_VIRGULA, lookahead);
         
@@ -91,6 +104,8 @@ verifica_variaveis:
         {
             *pos = pos_inicial;
         }
+        // Liberar o espaco alocado para a lista de variaveis.
+        free_lista_variavel();
     }
     else
     {
@@ -104,6 +119,9 @@ void lista_variavel(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int 
     int pos_inicial = *pos;
     if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 0)
     {
+        // Adicionar elemento na lista de variaveis.
+        inserir_variavel_na_lista(InfoAtomo);
+
         pos_inicial = *pos;
         while(consome(InfoAtomo, VIRGULA, lookahead, buffer, conta_linha, pos) == 0)
         {
@@ -113,6 +131,8 @@ void lista_variavel(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int 
                 *pos = pos_inicial;
                 retornar_erro(InfoAtomo, IDENTIFICADOR, lookahead);
             }
+            // Adicionar elemento na lista de variaveis.
+            inserir_variavel_na_lista(InfoAtomo);
         }
     }
     else
