@@ -42,13 +42,17 @@ void aumentar_lista(int tamanho)
 
 void inserir_variavel_na_lista(TInfoAtomo *atomo_variavel)
 {
-    // Checar se a lista está cheia. Caso esteja, aumentar.
-    if (lv_t_atual == lv_t_max)
+    // Checar atomo correto (IDENTIFICADOR).
+    if (atomo_variavel->atomo == IDENTIFICADOR)
     {
-        aumentar_lista(1);
+        // Checar se a lista está cheia. Caso esteja, aumentar.
+        if (lv_t_atual == lv_t_max)
+        {
+            aumentar_lista(1);
+        }
+        lista_variaveis[lv_t_atual] = *atomo_variavel;
+        lv_t_atual++;
     }
-    lista_variaveis[lv_t_atual] = *atomo_variavel;
-    lv_t_atual++;
 }
 
 void checar_variaveis()

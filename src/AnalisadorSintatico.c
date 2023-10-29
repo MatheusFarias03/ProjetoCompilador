@@ -104,6 +104,9 @@ verifica_variaveis:
         {
             *pos = pos_inicial;
         }
+        // Verifica se nao existem variaveis com o mesmo nome.
+        checar_variaveis();
+
         // Liberar o espaco alocado para a lista de variaveis.
         free_lista_variavel();
     }
@@ -119,12 +122,13 @@ void lista_variavel(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int 
     int pos_inicial = *pos;
     if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 0)
     {
-        // Adicionar elemento na lista de variaveis.
-        inserir_variavel_na_lista(InfoAtomo);
 
         pos_inicial = *pos;
         while(consome(InfoAtomo, VIRGULA, lookahead, buffer, conta_linha, pos) == 0)
         {
+            // Adicionar elemento na lista de variaveis.
+            inserir_variavel_na_lista(InfoAtomo);
+
             pos_inicial = *pos;
             if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 1)
             {
