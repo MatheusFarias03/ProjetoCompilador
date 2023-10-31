@@ -82,3 +82,17 @@ void free_lista_variavel()
     lv_t_atual = 0;
 
 }
+
+int checar_variavel_existe(TInfoAtomo *atomo_variavel)
+{
+    for (int i = 0; i < lv_t_atual; i++)
+    {
+        if (strcmp(lista_variaveis[i].atributo_ID, atomo_variavel->atributo_ID) == 0)
+        {
+            // Encontrado elemento com o mesmo atributo_ID
+            return 0;
+        }
+    }
+    // Elemento ausente na lista_variaveis
+    return 1;
+}

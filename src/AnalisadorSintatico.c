@@ -106,9 +106,6 @@ verifica_variaveis:
         }
         // Verifica se nao existem variaveis com o mesmo nome.
         checar_variaveis();
-
-        // Liberar o espaco alocado para a lista de variaveis.
-        free_lista_variavel();
     }
     else
     {
@@ -203,6 +200,16 @@ void fator(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_li
     switch (*lookahead)
     {
     case IDENTIFICADOR:
+        {
+            int result = checar_variavel_existe(InfoAtomo);
+            // Se o identificador nao foi declarado, retornar erro.
+            if (result == 1)
+            {
+                fprintf(stderr, "ERRO (ln.%d): Identificador <<%s>> nao declarado previamente.\n",
+                        InfoAtomo->linha, InfoAtomo->atributo_ID);
+                exit(1);
+            }
+        }
         break;
     
     case NUMERO:
@@ -356,6 +363,23 @@ void comando(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_
 
 void comando_atribuicao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
+    /* 
+    * Acho que eh meio que uma gambiarra esse if aqui pra poder identificar
+    * se o identificador foi declarado ou nao e tambem quando sair desse if
+    * o proximo consome pode verificar se foi utilizado o terminal adequado.
+    */
+    if (InfoAtomo->atomo == IDENTIFICADOR)
+    {
+        int result = checar_variavel_existe(InfoAtomo);
+        // Se o identificador nao foi declarado, retornar erro.
+        if (result == 1)
+        {
+            fprintf(stderr, "ERRO (ln.%d): Identificador <<%s>> nao declarado previamente.\n",
+                    InfoAtomo->linha, InfoAtomo->atributo_ID);
+            exit(1);
+        }
+    }
+
     if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, IDENTIFICADOR, lookahead);
     

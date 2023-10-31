@@ -23,6 +23,8 @@ void inserir_variavel_na_lista(TInfoAtomo *atomo_variavel);
 
 void checar_variaveis();
 
+int checar_variavel_existe(TInfoAtomo *atomo_variavel);
+
 // Liberar a memória alocada dinamicamente para lista_variaveis
 void free_lista_variavel();
 

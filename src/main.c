@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "include/AnalisadorLexico.h"
 #include "include/AnalisadorSintatico.h"
+#include "include/AnalisadorSemantico.h"
 #include "include/Itens.h"
 
 int main()
@@ -40,6 +41,9 @@ int main()
 	printf("\nAnalise finalizada com sucesso.\n");
 
 	free(buffer);
+	
+	// Liberar o espaco alocado para a lista de variaveis.
+    free_lista_variavel();
 
 	return 0;
 }
