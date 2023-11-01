@@ -43,7 +43,10 @@ int main()
 	free(buffer);
 	
 	// Liberar o espaco alocado para a lista de variaveis.
-    free_lista_variavel();
+	if (lista_variaveis != NULL)
+	{
+		free_lista_variavel();
+	}
 
 	return 0;
 }

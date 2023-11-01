@@ -65,3 +65,12 @@ int lv_t_max = 0;
 
 // Tamanho atual para a lista_variaveis.
 int lv_t_atual = 0;
+
+// Lista para guardar os InfoAtomos contidos na expressao.
+TInfoAtomo *lista_expressao = NULL;
+
+// Tamanho maximo para a lista_expressao.
+int le_t_max = 0;
+
+// Tamanho atual para a lista_expressao.
+int le_t_atual = 0;

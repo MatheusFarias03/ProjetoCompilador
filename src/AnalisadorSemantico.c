@@ -76,6 +76,7 @@ void checar_variaveis()
 void free_lista_variavel()
 {
     free(lista_variaveis);
+    lista_variaveis = NULL;
 
     // Resetar lv_t_max e lv_t_atual para indicar uma lista vazia
     lv_t_max = 0;
@@ -95,4 +96,64 @@ int checar_variavel_existe(TInfoAtomo *atomo_variavel)
     }
     // Elemento ausente na lista_variaveis
     return 1;
+}
+
+void criar_lista_expressao(int tamanho)
+{
+    if (lista_expressao == NULL)
+    {
+        lista_expressao = (TInfoAtomo*)malloc(tamanho * sizeof(TInfoAtomo));
+        if (lista_expressao == NULL)
+        {
+            fprintf(stderr, "Falha na alocacao de memoria para a <<lista_expressao>>.\n");
+            exit(1);
+        }
+        le_t_atual = 0;
+        le_t_max = tamanho;
+    }
+    else
+    {
+        fprintf(stderr, "<<lista_expressao>> previamente declarada.\n");
+        exit(1);
+    }
+}
+
+void avaliar_expressao()
+{
+    printf("\n");
+    for (int i = 0; i < le_t_max; i++)
+    {
+        if (lista_expressao[i].atomo == IDENTIFICADOR)
+            printf("InfoAtomo: %s\n", lista_expressao[i].atributo_ID);
+        else
+            printf("InfoAtomo: atomo = %d\n", lista_expressao[i].atomo);
+    }
+    printf("\n");
+}
+
+void aumentar_lista_expressao(int tamanho)
+{
+    le_t_max += tamanho;
+    lista_expressao = (TInfoAtomo*)realloc(lista_expressao, le_t_max * sizeof(TInfoAtomo));
+}
+
+void inserir_InfoAtomo_lista_expressao(TInfoAtomo *info_atomo)
+{
+    // Checar se a lista está cheia. Caso esteja, aumentar.
+    if (le_t_atual == le_t_max)
+    {
+        aumentar_lista_expressao(1);
+    }
+    lista_expressao[le_t_atual] = *info_atomo;
+    le_t_atual++;
+}
+
+void free_lista_expressao()
+{
+    free(lista_expressao);
+    lista_expressao = NULL;
+
+    // Resetar lv_t_max e lv_t_atual para indicar uma lista vazia
+    le_t_max = 0;
+    le_t_atual = 0;
 }

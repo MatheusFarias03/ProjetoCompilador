@@ -250,14 +250,29 @@ void fator(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_li
 
 void expressao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
+    // Criar a lista_expressao para guardar os InfoAtomos.
+    criar_lista_expressao(1);
+
+    inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
     expressao_simples(InfoAtomo, lookahead, buffer, conta_linha, pos);
 
     if( *lookahead == IGUAL || *lookahead == MENOR_IGUAL || *lookahead == MAIOR_IGUAL ||
         *lookahead == MENOR || *lookahead == MAIOR || *lookahead == CARDINAL)
     {
         relacional(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+        inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
         expressao_simples(InfoAtomo, lookahead, buffer, conta_linha, pos);
     }
+
+    // Avaliar se a expressao é valida. 
+    // (Lembrando que nao considera o ultimo elemento da lista)
+    avaliar_expressao();
+
+    // Liberar espaco para a lista_expressao.
+    free_lista_expressao();
 }
 
 
@@ -266,18 +281,28 @@ void expressao_simples(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, i
     if(*lookahead == MAIS || *lookahead == MENOS)
     {
         *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
+
+        inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
         *lookahead = InfoAtomo->atomo;
     }
 
     termo(InfoAtomo, lookahead, buffer, conta_linha, pos);
 
+    inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
 loop_ex_simp:
     if (*lookahead == MAIS || *lookahead == MENOS || *lookahead == OU)
     {
         *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
+
+        inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
         *lookahead = InfoAtomo->atomo;
 
         termo(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+        inserir_InfoAtomo_lista_expressao(InfoAtomo);
 
         goto loop_ex_simp;
     }

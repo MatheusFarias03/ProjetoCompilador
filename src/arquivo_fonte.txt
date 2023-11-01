@@ -8,7 +8,7 @@ inicio
     leia(n1);
     leia(n2);
     se( n1 > n2 ) entao
-        maior := n1
+        maior := n1 + falso > 2
     senao
         maior := n2;
     escreva(maior) // imprime o maior valor
