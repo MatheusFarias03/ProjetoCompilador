@@ -99,6 +99,7 @@ TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_l
 		// Se nao for nenhum dos dois, ERRO.
 		else
 		{
+			(*pos) -= 1;
 			infoAtomo.atomo = ERRO;
 		}
 	}

@@ -98,6 +98,7 @@ int checar_variavel_existe(TInfoAtomo *atomo_variavel)
     return 1;
 }
 
+// TODO: Alguma coisa de errado acontece aqui quando '(' ou ')' está na expressão.
 void criar_lista_expressao(int tamanho)
 {
     if (lista_expressao == NULL)
@@ -120,15 +121,183 @@ void criar_lista_expressao(int tamanho)
 
 void avaliar_expressao()
 {
-    printf("\n");
-    for (int i = 0; i < le_t_max; i++)
+    /*
+    * Algoritmo "Shunting Yard", do Dijkstra.
+    * Primeirament cria-se duas variaveis que servirão de pilha para guardar os InfoAtomos:
+    * pilha_saida e pilha_operadores. 
+    */
+    TInfoAtomo *pilha_saida = (TInfoAtomo*)malloc(le_t_max * sizeof(TInfoAtomo));
+    TInfoAtomo *pilha_operadores = (TInfoAtomo*)malloc(le_t_max * sizeof(TInfoAtomo));
+    
+    TInfoAtomo atomo_atual;
+    TInfoAtomo atomo_ant;
+    TInfoAtomo atomo_vazio = {0};
+
+    int pos_saida = 0;
+    int pos_operadores = 0;
+    int pos_ant = 0;
+
+    for (int i = 0; i < le_t_max - 1; i++)
     {
-        if (lista_expressao[i].atomo == IDENTIFICADOR)
-            printf("InfoAtomo: %s\n", lista_expressao[i].atributo_ID);
-        else
-            printf("InfoAtomo: atomo = %d\n", lista_expressao[i].atomo);
+        atomo_atual = lista_expressao[i];
+
+        // Se for um identificador, numero ou booleano: adicionar na pilha_saida.
+        if (
+            atomo_atual.atomo == IDENTIFICADOR || atomo_atual.atomo == NUMERO ||
+            atomo_atual.atomo == VERDADEIRO || atomo_atual.atomo == FALSO
+        )
+        {
+            pilha_saida[pos_saida] = atomo_atual;
+            pos_saida++;
+        }
+        // Caso seja mais ou menos...
+        else if (atomo_atual.atomo == MAIS || atomo_atual.atomo == MENOS)
+        {
+            // Caso não seja o primeiro operador na pilha_operadores...
+            if (pos_operadores > 0)
+            {
+                pos_ant = pos_operadores - 1;
+                atomo_ant = pilha_operadores[pos_ant];
+                
+                // Verificar se o InfoAtomo na posicao anterior é de igual ou maior valor.
+                if (
+                    atomo_ant.atomo == DIV || atomo_ant.atomo == ASTERISCO ||
+                    atomo_ant.atomo == MENOS || atomo_ant.atomo == MAIS
+                )
+                {
+                    /*
+                    * Caso seja, remover o InfoAtomo anterior da pilha_operadores e colocá-lo
+                    * na pilha_saida.
+                    */
+                    pilha_saida[pos_saida] = atomo_ant;
+                    pos_saida++;
+                    pilha_operadores[pos_ant] = atomo_atual;
+                }
+                // Caso não for de maior ou igual valor, apenas adicionar na lista.
+                else
+                {
+                    pilha_operadores[pos_operadores] = atomo_atual;
+                    pos_operadores++;
+                }
+
+            }
+            // Caso seja o primeiro operador, apenas adicioná-lo na pilha_operadores.
+            else
+            {
+                pilha_operadores[pos_operadores] = atomo_atual;
+                pos_operadores++;
+            }
+        }
+        // Caso seja divisão ou multiplicacão...
+        else if (atomo_atual.atomo == DIV || atomo_atual.atomo == ASTERISCO)
+        {
+            // Caso não seja o primeiro operador na pilha_operadores...
+            if (pos_operadores > 0)
+            {
+                pos_ant = pos_operadores - 1;
+                atomo_ant = pilha_operadores[pos_ant];
+                
+                // Verificar se o InfoAtomo na posicao anterior é de igual ou maior valor.
+                if (atomo_ant.atomo == DIV || atomo_ant.atomo == ASTERISCO)
+                {
+                    /*
+                    * Caso seja, remover o InfoAtomo anterior da pilha_operadores e colocá-lo
+                    * na pilha_saida.
+                    */
+                    pilha_saida[pos_saida] = atomo_ant;
+                    pos_saida++;
+                    pilha_operadores[pos_ant] = atomo_atual;
+                }
+                // Caso não for de maior ou igual valor, apenas adicionar na lista.
+                else
+                {
+                    pilha_operadores[pos_operadores] = atomo_atual;
+                    pos_operadores++;
+                }
+            }
+            // Caso seja o primeiro operador, apenas adicioná-lo na pilha_operadores.
+            else
+            {
+                pilha_operadores[pos_operadores] = atomo_atual;
+                pos_operadores++;
+            }
+        }
+        // Caso seja um fecha parenteses...
+        else if (atomo_atual.atomo == FECHA_PARENTESES)
+        {
+            // Percorrer a lista, de tras para frente, até encontrar o abre parenteses.
+            while (pilha_operadores[pos_operadores-1].atomo != ABRE_PARENTESES)
+            {
+                // Enquanto não, mover os atomos da pilha de operadores para a de saída.
+                if (pos_operadores != 0)
+                {
+                    pilha_saida[pos_saida] = pilha_operadores[pos_operadores-1];
+                    pos_saida++;
+                    pilha_operadores[pos_operadores-1] = atomo_vazio;
+                    pos_operadores -= 1;
+                }
+                else
+                {
+                    printf("ERRO (ln.%d): Há fecha-parenteses, mas não abre-parenteses.", atomo_atual.linha);
+                    exit(1);
+                }
+            }
+            // Apenas para confirmar se estamos no atomo com ABRE_PARENTESES.
+            if (pilha_operadores[pos_operadores].atomo == ABRE_PARENTESES)
+            {
+                pilha_operadores[pos_operadores] = atomo_vazio;
+                if (pos_operadores > 0)
+                {
+                    pos_operadores -= 1;
+                }
+            }
+        }
+        // Abre-parenteses e operadores de comparacao possuem a menor prioridade.
+        else if (
+            atomo_atual.atomo == ABRE_PARENTESES || atomo_atual.atomo == MENOR ||
+            atomo_atual.atomo == MAIOR || atomo_atual.atomo == MENOR_IGUAL ||
+            atomo_atual.atomo == MAIOR_IGUAL || atomo_atual.atomo == IGUAL
+        )
+        {
+            pilha_operadores[pos_operadores] = atomo_atual;
+            pos_operadores++;
+        }
     }
+
+    // Mover a galera toda dos operadores pra saída.
+    for (int i = pos_operadores-1; i >= 0; i -= 1)
+    {
+        pilha_saida[pos_saida] = pilha_operadores[i];
+        pos_saida++;
+        pilha_operadores[i] = atomo_vazio;
+        pos_operadores -= 1;
+    }
+
     printf("\n");
+    for (int i = 0; i < pos_saida; i++)
+    {
+        if (pilha_saida[i].atomo == IDENTIFICADOR)
+        {
+            printf("\npilha_saida[%d]: %s", i, pilha_saida[i].atributo_ID);
+        }
+        else if (pilha_saida[i].atomo == NUMERO)
+        {
+            printf("\npilha_saida[%d]: %f", i, pilha_saida[i].atributo_numero);
+        }
+        else
+        {
+            printf("\npilha_saida[%d]: %d", i, pilha_saida[i].atomo);
+        }
+    }
+    printf("\n\n");
+
+    // Limpar a memória para as pilhas.
+    free(pilha_operadores);
+    free(pilha_saida);
+
+    pos_saida = 0;
+    pos_operadores = 0;
+    pos_ant = 0;
 }
 
 void aumentar_lista_expressao(int tamanho)
