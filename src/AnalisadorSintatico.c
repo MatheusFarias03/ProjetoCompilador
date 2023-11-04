@@ -223,6 +223,11 @@ void fator(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_li
     
     case ABRE_PARENTESES:
         {
+            // Criar a lista_expressao para guardar os InfoAtomos.
+            criar_lista_expressao(1);
+
+            inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
             *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
             *lookahead = InfoAtomo->atomo;
             
@@ -289,8 +294,6 @@ void expressao_simples(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, i
 
     termo(InfoAtomo, lookahead, buffer, conta_linha, pos);
 
-    inserir_InfoAtomo_lista_expressao(InfoAtomo);
-
 loop_ex_simp:
     if (*lookahead == MAIS || *lookahead == MENOS || *lookahead == OU)
     {
@@ -300,6 +303,7 @@ loop_ex_simp:
 
         *lookahead = InfoAtomo->atomo;
 
+        // Not recognizing the '*' and '/' characters.
         termo(InfoAtomo, lookahead, buffer, conta_linha, pos);
 
         inserir_InfoAtomo_lista_expressao(InfoAtomo);
@@ -312,13 +316,20 @@ loop_ex_simp:
 void termo(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
     fator(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    inserir_InfoAtomo_lista_expressao(InfoAtomo);
 
 termo_loop:
     if (*lookahead == ASTERISCO || *lookahead == DIV || *lookahead == E)
     {
         *InfoAtomo = obter_atomo(buffer, conta_linha, pos);
         *lookahead = InfoAtomo->atomo;
+
+        inserir_InfoAtomo_lista_expressao(InfoAtomo);
+
         fator(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+        inserir_InfoAtomo_lista_expressao(InfoAtomo);
+        
         goto termo_loop;
     }
     
@@ -454,6 +465,10 @@ void comando_se(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *con
 {
     if(consome(InfoAtomo, SE, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, SE, lookahead);
+
+    // As duas linhas abaixo resolvem erro do abre parenteses na verificacao da expressao.
+    criar_lista_expressao(1);
+    inserir_InfoAtomo_lista_expressao(InfoAtomo);
 
     if(consome(InfoAtomo, ABRE_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);

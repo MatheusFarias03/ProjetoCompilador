@@ -114,8 +114,8 @@ void criar_lista_expressao(int tamanho)
     }
     else
     {
-        fprintf(stderr, "<<lista_expressao>> previamente declarada.\n");
-        exit(1);
+        // fprintf(stderr, "<<lista_expressao>> previamente declarada.\n");
+        // exit(1);
     }
 }
 
@@ -273,7 +273,6 @@ void avaliar_expressao()
         pos_operadores -= 1;
     }
 
-    printf("\n");
     for (int i = 0; i < pos_saida; i++)
     {
         if (pilha_saida[i].atomo == IDENTIFICADOR)
