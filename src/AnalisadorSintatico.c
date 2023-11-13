@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "include/Itens.h"
 #include "include/AnalisadorSintatico.h"
 #include "include/AnalisadorLexico.h"
@@ -39,6 +40,8 @@ int consome(TInfoAtomo *InfoAtomo, TAtomo atomo, TAtomo *lookahead, char *buffer
 
 void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta_linha, int *pos)
 {
+    printf("\nINPP");
+
     if(consome(InfoAtomo, ALGORITMO, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, ALGORITMO, lookahead);
     
@@ -52,6 +55,7 @@ void programa(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *conta
     
     if(consome(InfoAtomo, PONTO, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, PONTO, lookahead);
+    printf("\nPARA");
 }
 
 
@@ -106,6 +110,7 @@ verifica_variaveis:
         }
         // Verifica se nao existem variaveis com o mesmo nome.
         checar_variaveis();
+        printf("\nAMEM %d", lv_t_atual);
     }
     else
     {
@@ -404,6 +409,9 @@ void comando_atribuicao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, 
     * se o identificador foi declarado ou nao e tambem quando sair desse if
     * o proximo consome pode verificar se foi utilizado o terminal adequado.
     */
+
+    TInfoAtomo variavel_atomo;
+    
     if (InfoAtomo->atomo == IDENTIFICADOR)
     {
         int result = checar_variavel_existe(InfoAtomo);
@@ -415,6 +423,8 @@ void comando_atribuicao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, 
             exit(1);
         }
     }
+    
+    variavel_atomo = *InfoAtomo;
 
     if(consome(InfoAtomo, IDENTIFICADOR, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, IDENTIFICADOR, lookahead);
@@ -423,6 +433,7 @@ void comando_atribuicao(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, 
         retornar_erro(InfoAtomo, ATRIBUICAO, lookahead);
 
     expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    printf("\nARMZ %s", variavel_atomo.atributo_ID);
 }
 
 
@@ -434,7 +445,12 @@ void comando_entrada(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int
     if(consome(InfoAtomo, ABRE_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
     
+    TInfoAtomo atomo_variavel;
+    atomo_variavel = *InfoAtomo;
     lista_variavel(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+    printf("\nLEIA");
+    printf("\nARMZ %s", atomo_variavel.atributo_ID);
 
     if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
@@ -450,6 +466,7 @@ void comando_enquanto(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, in
         retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
 
     expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    printf("\nDSVF L3");
 
     if(consome(InfoAtomo, FECHA_PARENTESES, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, FECHA_PARENTESES, lookahead);
@@ -458,6 +475,7 @@ void comando_enquanto(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, in
         retornar_erro(InfoAtomo, FACA, lookahead);
 
     comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    printf("\nL3: NADA");
 }
 
 
@@ -480,15 +498,23 @@ void comando_se(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *con
     
     if(consome(InfoAtomo, ENTAO, lookahead, buffer, conta_linha, pos) == 1)
         retornar_erro(InfoAtomo, ENTAO, lookahead);
+    
+    printf("\nDSVF L1");
 
     comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+    printf("\nDSVS L2");
 
     if(*lookahead == SENAO)
     {
         if(consome(InfoAtomo, SENAO, lookahead, buffer, conta_linha, pos) == 1)
             retornar_erro(InfoAtomo, SENAO, lookahead);
 
+        printf("\nL1: NADA");    
+
         comando(InfoAtomo, lookahead, buffer, conta_linha, pos);
+
+        printf("\nL2: NADA");
     }
 }
 
@@ -502,6 +528,7 @@ void comando_saida(TInfoAtomo *InfoAtomo, TAtomo *lookahead, char *buffer, int *
         retornar_erro(InfoAtomo, ABRE_PARENTESES, lookahead);
     
     expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+    printf("\nIMPR");
 
 loop_cmd_saida:
     if(*lookahead == VIRGULA)
@@ -510,6 +537,8 @@ loop_cmd_saida:
         *lookahead = InfoAtomo->atomo;
 
         expressao(InfoAtomo, lookahead, buffer, conta_linha, pos);
+        printf("\nIMPR");
+
         goto loop_cmd_saida;
     }
 

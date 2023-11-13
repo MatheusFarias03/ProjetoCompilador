@@ -23,7 +23,7 @@ void ler_arquivo(FILE *arquivo, char **buffer)
 
 	if(arquivo == NULL)
 	{
-		printf("Erro ao abrir o arquivo.\n");
+		printf("\nErro ao abrir o arquivo.");
 		exit(1);
 	}
 
@@ -36,7 +36,7 @@ void ler_arquivo(FILE *arquivo, char **buffer)
 
 	if(*buffer == NULL)
 	{
-		printf("Erro ao alocar memoria.\n");
+		printf("\nErro ao alocar memoria.");
 		fclose(arquivo);
 		exit(1);
 	}
@@ -70,7 +70,6 @@ TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_l
 		// Se for comentario de apenas uma linha.
 		if(buffer[*pos] == '/')
 		{
-			printf("#%03d: %s \n", *conta_linha, strAtomo[0][COMENTARIO]);
 			do
 			{
 				(*pos)++;
@@ -82,14 +81,12 @@ TInfoAtomo reconhece_comentario(TInfoAtomo infoAtomo, char *buffer, int *conta_l
 		// Se for comentario de multiplas linhas.
 		else if(buffer[*pos] == '*')
 		{
-			printf("#%03d: %s \n", *conta_linha, strAtomo[0][COMENTARIO]);
 			do
 			{
 				(*pos)++;
 				if(buffer[*pos]=='\n')
 				{
 					(*conta_linha)++;
-					printf("#%03d: %s \n", *conta_linha, strAtomo[0][COMENTARIO]);
 				}
 			} while (buffer[*pos] != '*' && buffer[(*pos)+1] != '/');
 			(*pos) += 2;
@@ -241,7 +238,6 @@ TInfoAtomo obter_atomo(char *buffer, int *conta_linha, int *pos)
 	else
 		infoAtomo.atomo = ERRO;
 
-	printf("#%03d: %s \n", *conta_linha, strAtomo[0][infoAtomo.atomo]);
 
 	infoAtomo.linha = *conta_linha;
 	return infoAtomo;

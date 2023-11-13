@@ -273,22 +273,79 @@ void avaliar_expressao()
         pos_operadores -= 1;
     }
 
+    for (int i = 2; i < pos_saida; i++)
+    {
+        if (
+            pilha_saida[i].atomo == MENOS || pilha_saida[i].atomo == MAIS ||
+            pilha_saida[i].atomo == DIV || pilha_saida[i].atomo == ASTERISCO ||
+            pilha_saida[i].atomo == MAIOR || pilha_saida[i].atomo == MENOR
+        )
+            {
+                if (pilha_saida[i-1].atomo == NUMERO || pilha_saida[i-1].atomo == IDENTIFICADOR)
+                {
+                    if (pilha_saida[i-2].atomo == VERDADEIRO || pilha_saida[i-2].atomo == FALSO)
+                    {
+                        fprintf(stderr, "ERRO (ln. %d): Operacao incorreta.\n", pilha_saida[i].linha);
+                        exit(1);
+                    }
+                }
+                else if (pilha_saida[i-1].atomo == VERDADEIRO || pilha_saida[i-1].atomo == FALSO)
+                {
+                    if (pilha_saida[i-2].atomo == NUMERO || pilha_saida[i-2].atomo == IDENTIFICADOR)
+                    {
+                        fprintf(stderr, "ERRO (ln. %d): Operacao incorreta.\n", pilha_saida[i].linha);
+                        exit(1);
+                    }
+                }
+            }
+    }
+
     for (int i = 0; i < pos_saida; i++)
     {
         if (pilha_saida[i].atomo == IDENTIFICADOR)
         {
-            printf("\npilha_saida[%d]: %s", i, pilha_saida[i].atributo_ID);
+            printf("\nCRVL %s", pilha_saida[i].atributo_ID);
         }
         else if (pilha_saida[i].atomo == NUMERO)
         {
-            printf("\npilha_saida[%d]: %f", i, pilha_saida[i].atributo_numero);
+            printf("\nCRCT %0.f", pilha_saida[i].atributo_numero);
         }
         else
         {
-            printf("\npilha_saida[%d]: %d", i, pilha_saida[i].atomo);
+            if (pilha_saida[i].atomo == MAIS)
+            {
+                printf("\nSOMA");
+            }
+            if (pilha_saida[i].atomo == MENOS)
+            {
+                printf("\nSUBT");
+            }
+            if (pilha_saida[i].atomo == ASTERISCO)
+            {
+                printf("\nMULT");
+            }
+            if (pilha_saida[i].atomo == DIV)
+            {
+                printf("\nDIVI");
+            }
+            if (pilha_saida[i].atomo == MAIOR)
+            {
+                printf("\nCMMA");
+            }
+            if (pilha_saida[i].atomo == MENOR)
+            {
+                printf("\nCMME");
+            }
+            if (pilha_saida[i].atomo == MAIOR_IGUAL)
+            {
+                printf("\nCMAG");
+            }
+            if (pilha_saida[i].atomo == MENOR_IGUAL)
+            {
+                printf("\nCMEG");
+            }
         }
     }
-    printf("\n\n");
 
     // Limpar a memória para as pilhas.
     free(pilha_operadores);
